@@ -38,6 +38,9 @@
   #next { margin-top:6px; padding:10px 26px; border:none; border-radius:10px;
           background:#455a64; color:#fff; font-size:.9rem; font-weight:700;
           cursor:pointer; visibility:hidden; }
+  #dotToggle { font-size:.75rem; color:#546e7a; margin:2px 0 4px; cursor:pointer;
+             display:flex; align-items:center; gap:6px; user-select:none; }
+  #dotToggle input { width:16px; height:16px; accent-color:#1a5276; }
   #rules { font-size:.72rem; color:#78909c; margin:14px 12px 20px; text-align:center;
            max-width:380px; line-height:1.5; }
   #fin { display:none; text-align:center; padding:10px; }
@@ -56,6 +59,8 @@
   <span>Aciertos: <b id="hits">0</b>/<b id="total">0</b></span>
   <span>Récord: <b id="best">0</b></span>
 </div>
+
+<label id="dotToggle"><input type="checkbox" id="dots" checked> Mostrar colores 🟠🔵 en los movimientos</label>
 
 <div class="card" id="card">
   <img id="sprite" src="" alt="">
@@ -113,7 +118,8 @@ function nextCard(){
 function movesHtml(c){
   if(!c.set) return '';
   const dot = {f:'🟠', s:'🔵', o:'⚪'};
-  return 'Set típico: ' + c.set.map(([m,k]) => `${dot[k]}${m}`).join(' · ');
+  const show = $('dots').checked;
+  return 'Set típico: ' + c.set.map(([m,k]) => (show ? dot[k] : '') + m).join(' · ');
 }
 function answer(pick){
   $('bReflejo').disabled = true; $('bPantalla').disabled = true;
@@ -153,6 +159,9 @@ $('bReflejo').onclick = () => answer('reflejo');
 $('bPantalla').onclick = () => answer('pantalla');
 $('next').onclick = nextCard;
 $('again').onclick = newRound;
+$('dots').checked = localStorage.getItem('dots') !== '0';
+$('dots').onchange = () => { localStorage.setItem('dots', $('dots').checked ? '1' : '0');
+  if(cur) $('hint').innerHTML = movesHtml(cur); };
 newRound();
 </script>
 </body>
